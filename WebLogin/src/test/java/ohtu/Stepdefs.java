@@ -36,15 +36,20 @@ public class Stepdefs {
         WebElement element = driver.findElement(By.linkText("register new user"));
         element.click();
     }
+    
+    @Given("^user with username \"([^\"]*)\" with password \"([^\"]*)\" is succesfully created$")
+    public void user_with_username_and_password_created(String username, String password) throws Throwable {
+        registerNewUser(username, password);
+    }
+    
+    @Given("^user with username \"([^\"]*)\" and password \"([^\"]*)\" is unsuccesfully created$")
+    public void user_is_unsuccessfully_created(String username, String password) throws Throwable {
+        registerNewUser(username, password);
+    }
 
     @When("^username \"([^\"]*)\" and password \"([^\"]*)\" are given$")
     public void username_and_password_are_given(String username, String password) throws Throwable {
-        WebElement element = driver.findElement(By.name("username"));
-        element.sendKeys(username);
-        element = driver.findElement(By.name("password"));
-        element.sendKeys(password);
-        element = driver.findElement(By.name("login"));
-        element.submit();  
+        logInWith(username, password);
     }
 
     @Then("^system will respond \"([^\"]*)\"$")
@@ -68,7 +73,7 @@ public class Stepdefs {
     }
     
     @When("^correct username \"([^\"]*)\", password \"([^\"]*)\" and password confirmation \"([^\"]*)\" are given for registration$")
-    public void correct_register_information_are_given_for_registration(String username, String password, String passwordConfirmation) {
+    public void correct_register_information_are_given_for_registration(String username, String password, String passwordConfirmation) throws Throwable {
         registerWith(username, password, passwordConfirmation);
     }
     
@@ -78,12 +83,12 @@ public class Stepdefs {
     }
     
     @When("^too short username \"([^\"]*)\" and valid password \"([^\"]*)\" are given for registration$")
-    public void too_shot_username_and_correct_password_are_given_for_registration(String username, String password) {
+    public void too_shot_username_and_correct_password_are_given_for_registration(String username, String password) throws Throwable {
         registerWith(username, password, password);
     }
     
     @When("^correct username \"([^\"]*)\" and password consisting of only letters \"([^\"]*)\" are given for registration$")
-    public void password_with_only_letters_is_given_for_registration(String username, String password) {
+    public void password_with_only_letters_is_given_for_registration(String username, String password) throws Throwable {
         registerWith(username, password, password);
     }
     
@@ -95,6 +100,16 @@ public class Stepdefs {
     @When("^correct username \"([^\"]*)\" is given but password \"([^\"]*)\" and password confirmation \"([^\"]*)\" do not match$")
     public void password_and_password_confirmation_do_not_match(String username, String password, String passwordConfimation) throws Throwable {
         registerWith(username, password, passwordConfimation);
+    }
+    
+    @When("^correct username \"([^\"]*)\" and password \"([^\"]*)\" are entered after new account creation$")
+    public void correct_username_and_password_are_entered_for_a_new_account(String username, String password) throws Throwable {
+        logInWith(username, password);
+    }
+    
+    @When("^wrong username \"([^\"]*)\" and password \"([^\"]*)\" are given for login$")
+    public void wrong_username_and_password_are_given_for_login(String username, String password) throws Throwable {
+        logInWith(username, password);
     }
     
     @Then("^user is logged in$")
@@ -152,5 +167,13 @@ public class Stepdefs {
         element.sendKeys(passwordConfirmation);
         element = driver.findElement(By.name("signup"));
         element.submit();  
+    }
+    
+    private void registerNewUser(String username, String password) {
+        driver.get(baseUrl);
+        WebElement element = driver.findElement(By.linkText("register new user"));
+        element.click();
+        registerWith(username, password, password);
+        driver.get(baseUrl);
     }
 }
