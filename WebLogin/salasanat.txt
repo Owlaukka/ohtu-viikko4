@@ -3,3 +3,5 @@ jukka;akkuj
 toinen;salasana
 asdf;asdf
 kolmas;salasana
+uusi;salasana
+uusi2;asdf
